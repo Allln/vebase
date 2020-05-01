@@ -23,6 +23,8 @@ l_data = vebase.livseg.load_vdata(p2,p1,p1_i,p2_i)
 voda_ = vebase.livseg.vebavoda_sk(l_data)
 # choose important nodes of portal vein
 tree_red = vebase.livseg.tree_reduction(voda_[0],voda_[1], voda_[2],l_data[3]) 
-
+#plot usable fcns: plot_tree_reduction_3d_porta(tree_red,porta), plot_tree_reduction_2d(tree_red, chosen_slice), #plot_tree_reduction_3d(tree_red)
+porta = l_data[0]
+plot_tree_reduction_3d_porta(tree_red,porta)
 print(tree_red)
 ```
