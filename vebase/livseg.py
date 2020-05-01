@@ -666,12 +666,12 @@ def tree_reduction(stats, list_of_areas_arr_edges, dist_map_final_liver_vol, vol
             for i in range(0,len(los)):
                 tempvol = potroots[los[i][0]-1].vol
                 try:
-                    if potroots[los[i][0]-1].left.vol > 50000 and (potroots[los[i][0]-1].left.vol > tempvol*0.43 and potroots[los[i][0]-1].left.vol < tempvol*0.73):
+                    if potroots[los[i][0]-1].left.vol > 150000 and (potroots[los[i][0]-1].left.vol > tempvol*0.43 and potroots[los[i][0]-1].left.vol < tempvol*0.73):
                         div_nodes.append(potroots[los[i][0]-1].val)
                 except:
                     None
                 try:
-                    if potroots[los[i][0]-1].right.vol > 50000 and (potroots[los[i][0]-1].right.vol > tempvol*0.43 and potroots[los[i][0]-1].right.vol < tempvol*0.73):
+                    if potroots[los[i][0]-1].right.vol > 150000 and (potroots[los[i][0]-1].right.vol > tempvol*0.43 and potroots[los[i][0]-1].right.vol < tempvol*0.73):
                         div_nodes.append(potroots[los[i][0]-1].val)
                 except:
                     None
@@ -863,14 +863,14 @@ def plot_tree_reduction_3d(tree_red):
     seg_ar = list(reversed(seg_ar))
     fig = plt.figure(figsize=(10,10))
     ax = plt.axes(projection='3d')
-    for i in range(0,len(seg_ar)-3,3):
+    for i in range(0,len(seg_ar),3):
         if(len(seg_ar[i]) == 0):
             None
         else:
             # x, y ,z
             ax.scatter3D(seg_ar[i+2],seg_ar[i+1],seg_ar[i])
     #check print ???matchin lengths of areas
-    for i in range(0,len(seg_ar)-3,3):
+    for i in range(0,len(seg_ar),3):
         print(len(seg_ar[i]),len(seg_ar[i+1]),len(seg_ar[i+2]))
 
 def plot_tree_reduction_2d(tree_red, chosen_slice):
@@ -936,7 +936,7 @@ def plot_tree_reduction_2d(tree_red, chosen_slice):
     seg_ar = list(reversed(seg_ar))
     #2d
     f2dpl = []
-    for i in range(0,len(seg_ar)-3,3):
+    for i in range(0,len(seg_ar),3):
         slicex = []
         slicey = []    
         for j in range(0,len(seg_ar[i])):
@@ -947,5 +947,86 @@ def plot_tree_reduction_2d(tree_red, chosen_slice):
         f2dpl.append(slicex)
         f2dpl.append(slicey)
     fig = plt.figure(figsize=(10,10))
-    for i in range(0,len(f2dpl)-1,2):
-        plt.scatter(f2dpl[i],f2dpl[i+1])
+    for i in range(0,len(f2dpl),2):
+        plt.scatter(f2dpl[i],f2dpl[i+1])      
+        
+        
+        
+def plot_tree_reduction_3d_porta(tree_red,porta):
+
+    #prepare areas for figure
+    sorted_seg = []
+    t = 0
+    while(t != 1):
+        leng = 999
+        ti = 0
+        for i in range(0,len(tree_red[0][-1])):
+            if len(tree_red[0][-1][i]) < leng:
+                ti = i
+                leng = len(tree_red[0][-1][i])
+        sorted_seg.append(tree_red[0][-1][ti])
+        tree_red[0][-1].remove(tree_red[0][-1][ti])
+        if (len(tree_red[0][-1]) == 0):
+            t = 1
+    list(reversed((sorted_seg)))
+    #build
+    dm = voda_[2]
+    edges = []
+    for i in range(0, len(voda_[2])):
+        if voda_[2][i][3] > -1:
+            edges.append(voda_[2][i])
+    nodes = []
+    for i in range(0, len(voda_[2])):
+        if voda_[2][i][3] < 1:
+            nodes.append(voda_[2][i])
+
+    atemp_ = []
+
+    nodes_f = list(reversed(nodes))
+    for x in range(0,len(sorted_seg)):
+        ta = []
+        for i in range(0,len(nodes_f)):
+            if -nodes_f[i][3] in sorted_seg[x]:
+                ta.append(nodes_f[i])
+        atemp_.append(ta)
+    for x in range(0,len(sorted_seg)):
+        ta = []
+        for i in range(0, len(edges)):
+            if edges[i][3] in sorted_seg[x]:
+                ta.append(edges[i])
+        for k in range(0,len(ta)):
+            atemp_[x].append(ta[k])
+
+
+    seg_ar = []
+    test = 0
+
+    for atl in range(0,len(atemp_)):
+        a11a = []
+        a11b = []
+        a11c = []
+        for cnt in range(0,len(atemp_[atl])):
+            for i in range(0,len(atemp_[atl][cnt][2])):
+                if porta[(atemp_[atl][cnt][0][i])][(atemp_[atl][cnt][1][i])][(atemp_[atl][cnt][2][i])] == 1:
+                    a11a.append(atemp_[atl][cnt][2][i])
+                    a11b.append(atemp_[atl][cnt][1][i])
+                    a11c.append(atemp_[atl][cnt][0][i])
+        seg_ar.append(a11a)
+        seg_ar.append(a11b)
+        seg_ar.append(a11c)
+    
+    seg_ar = list(reversed(seg_ar))
+    print(len(seg_ar))
+    fig = plt.figure(figsize=(10,10))
+    ax = plt.axes(projection='3d')
+    for i in range(0,len(seg_ar),3):
+        if(len(seg_ar[i]) == 0):
+            None
+        else:
+            # x, y ,z
+            ax.scatter3D(seg_ar[i+2],seg_ar[i+1],seg_ar[i])
+    fig = plt.figure(figsize=(10,10))
+    ax = plt.axes(projection='3d')
+
+    for i in range(0,len(seg_ar),3):
+        print("asdf", len(seg_ar[i]),len(seg_ar[i+1]),len(seg_ar[i+2]))
