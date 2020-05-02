@@ -287,6 +287,7 @@ def tree_reduction(stats, list_of_areas_arr_edges, dist_map_final_liver_vol, vol
     """
     tree_reduction merge volumetric data to tree and remove pot. unnecessary nodes - return array with pot. IMPORTANT nodes
     represent connections in var mattest
+    fcns for 2d png with tree for graphics repre: visualize_tree_vol(tree), visualize_tree_val(tree) - volumes, id of nodes
     """
     #testlistn contains every conncted pair of nodes
     #mattest prepresent structure of stats 2D matrix
