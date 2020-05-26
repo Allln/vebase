@@ -279,7 +279,19 @@ def voda_sk(organ_seg, liver_seg, voxelsize, cr):
     ret_array.append(list_of_areas_arr_edges)
     ret_array.append(dist_map_final_liver_vol)
     return ret_array
-    
+
+
+#dist_map_final_liver_vol = [[[1,1,1],[6,6,6],[7,7,7],1],[[0,0,0],[6,6,6],[7,7,7],2]]  #example dat dist_map_final_liver_vol
+#num_of_slices = 129
+#first arg - dist_map_final_liver_vol z voda_sk, sec. arg - num. of dcms in dataset ircad.1 129
+def to_matrix(dist_map_final_liver_vol,num_of_slices):
+    matrix_ = np.zeros([num_of_slices,512,512])
+
+    for j in range(0,len(dist_map_final_liver_vol)):
+        for k in range(0,len(dist_map_final_liver_vol[j][0])):
+            matrix_[dist_map_final_liver_vol[j][0][k],dist_map_final_liver_vol[j][1][k],dist_map_final_liver_vol[j][2][k]] = 1
+    return matrix_
+#to_matrix(dist_map_final_liver_vol,2)
     
 def tree_reduction(stats, list_of_areas_arr_edges, dist_map_final_liver_vol, volumecekr, tree_graph_check):
     
