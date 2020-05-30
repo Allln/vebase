@@ -106,6 +106,7 @@ def load_vdata(p_mask_path, l_mask_path, l_mask_path_img1, l_mask_path_img2, acc
         counter = counter + 1
     vox_1 = ds1["PixelSpacing"][0]
     vox_2 = ds1["PixelSpacing"][1]
+    print("Approximate volume of chosen liver is:", vox_sz*vox_1*vox_2*volumecekr," mm^3")
     load_array = []
     load_array.append(volume_data_porta)
     load_array.append(volume_data_liver)
@@ -954,23 +955,33 @@ def vein_b_viz_l(porta,segs,stats,dist_map_final_liver_vol):
         for j in range(0,len(seg_frac[i])):
             test_val = -seg_frac[i][j]
             for k in range(1,len(stats)):
-                if test_val == stats[k]["nodeIdA"] or test_val == stats[k]["nodeIdB"]:
-                    if arofedges_buildvol[k-1] in ata:
-                        None
-                    else:
-                        ata.append(arofedges_buildvol[k-1])
+                try:
+                    if test_val == stats[k]["nodeIdA"] or test_val == stats[k]["nodeIdB"]:
+                        if arofedges_buildvol[k-1] in ata:
+                            None
+                        else:
+                            ata.append(arofedges_buildvol[k-1])
+                except:
+                    if test_val == stats[k]["nodeIdA"]:
+                        if arofedges_buildvol[k-1] in ata:
+                            None
+                        else:
+                            ata.append(arofedges_buildvol[k-1])
+                            print(arofedges_buildvol[k-1])
+
             ata.append(uzly[-test_val-1])
         arr_objcts.append(ata)
-        
+    #print(arr_objcts[1])
     fig = plt.figure(figsize=(10,10))
     ax = plt.axes(projection='3d')
     
     color = [(0.1, 0.1, 0.1), (0.1, 0.1, 0.3),(0.1, 0.1, 0.6),(0.1, 0.1, 0.9),(0.1, 0.3, 0.1),(0.1, 0.6, 0.1),(0.1, 0.9, 0.1),(0.3, 0.1, 0.1),(0.6, 0.1, 0.1),(0.9, 0.1, 0.1),(0.3, 0.1, 0.3),(0.6, 0.1, 0.6),(0.9, 0.1, 0.9),(0.5, 0.5, 0.5)]
 
-
     color_check = 0
     for i in range(0,len(arr_objcts)):
         for cnt in range(0,len(arr_objcts[i])):
-            ax.scatter3D(arr_objcts[i][cnt][2],arr_objcts[i][cnt][1],arr_objcts[i][cnt][0],color = color[i])
-    #fig.savefig('myimage.png', format='png', dpi=600)
-          
+            try:
+                ax.scatter3D(arr_objcts[i][cnt][2],arr_objcts[i][cnt][1],arr_objcts[i][cnt][0],color = color[i])
+            except:
+                None
+    #fig.savefig('algoritmus_jatra.png', format='png', dpi=600)
