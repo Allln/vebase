@@ -41,7 +41,7 @@ def load_vdata(p_mask_path, l_mask_path, l_mask_path_img1, l_mask_path_img2, acc
     ds1 = pyd.read_file(l_mask_path_img1)
     ds2 = pyd.read_file(l_mask_path_img2)
     vox_sz = ds2.ImagePositionPatient[2]-ds1.ImagePositionPatient[2]
-    
+    logger.debug("masks readed")
     #liver_mask
     PathDicom = l_mask_path
     lstFilesDCM = [] 
@@ -58,6 +58,7 @@ def load_vdata(p_mask_path, l_mask_path, l_mask_path_img1, l_mask_path_img2, acc
         ds = pyd.read_file(filenameDCM)
         # store the raw image data
         dcmmatrx.append(ds.pixel_array)
+        logger.debug(f"fn={filenameDCM}")
     test = dcmmatrx[1]
     tempsz = (np.shape(test))
     ylab = tempsz[1]
@@ -68,6 +69,7 @@ def load_vdata(p_mask_path, l_mask_path, l_mask_path_img1, l_mask_path_img2, acc
     for pic in range(0, len(dcmmatrx)):
         temppi = dcmmatrx[pic]
         tempbox = [np.zeros([xlab, ylab])]
+        logger.debug(f"liver frame={pic}")
         for x in range(0, xlab):
             for y in range(0, ylab):
                 if(temppi[x, y]) == 255:
@@ -75,6 +77,7 @@ def load_vdata(p_mask_path, l_mask_path, l_mask_path_img1, l_mask_path_img2, acc
                     volume_data_liver [int(counter), int(x), int(y)] = int(1)
         counter = counter + 1
     #porta_mask
+    logger.debug("porta mask")
     PathDicom = p_mask_path
     lstFilesDCM = [] 
     lstFilesDCM = os.listdir(PathDicom) 
