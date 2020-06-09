@@ -20,9 +20,14 @@ p2_i = "D:/liver_datasets_outputs/wokrin/1/MASKS_DICOM/liver/image_2"
 # load ncsry data
 l_data = vebase.livseg.load_vdata(p2,p1,p1_i,p2_i)
 # build volumes
-voda_ = vebase.livseg.vebavoda_sk(l_data)
-# choose important nodes of portal vein
-tree_red = vebase.livseg.tree_reduction(voda_[0],voda_[1], voda_[2],l_data[3]) 
-
-print(tree_red)
+organ_seg = l_data[0]
+liver_seg = l_data[1]
+voxelsize = l_data[2]
+cr = l_data[3]
+voda_ = vebase.livseg.voda_sk(organ_seg,liver_seg,voxelsize,cr)
+#hint for segmentation params.
+x = seg_hinter(temp) #temp = 2 - 1.bifurcation, temp = 4  2. bifurcation, temp > 8 more than real structure... 
+tree_red = vebase.livseg.tree_reduction(voda_[0],voda_[1], voda_[2],l_data[3],1) 
+#tree_red[0][-1] final segment areas
+seg3d = seg_3dnp(l_data[1],tree_red[0][-1],voda_[0],voda_[2])
 ```
